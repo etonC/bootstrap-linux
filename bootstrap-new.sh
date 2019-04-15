@@ -138,8 +138,22 @@ function Ubuntu_cleanup() { echo "==> Cleanup Install"
 }
 
 # configure and deploy
-apt
-os_ubunt
-ntp
-firewall
-Ubuntu_cleanup
+while read OSver; do
+    case "$OSver" in
+        Ubuntu)
+        	apt
+			os_ubunt
+			ntp
+			firewall
+			Ubuntu_cleanup
+            ;;
+        CentOS)
+			ntp
+			firewall
+            ;;
+        *) # unsupported flags
+            echo "Error: Unsupported OS Version $OSver" >&2
+            exit 1
+            ;;
+    esac
+done <<< "$(cat /etc/*-release |grep "^NAME"| sed 's/NAME="\(.*\)"/\1/g') | awk -F" " '{print $1}'"
