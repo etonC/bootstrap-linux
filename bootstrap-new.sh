@@ -156,4 +156,4 @@ while read OSver; do
             exit 1
             ;;
     esac
-done <<< "$(cat /etc/*-release |grep "^NAME"| sed 's/NAME="\(.*\)"/\1/g') | awk -F" " '{print $1}'"
+done <<< "$(cat /etc/*-release |grep "^NAME"| sed 's/NAME="\(.*\)"/\1/g' | awk -F" " '{print $1}')"
