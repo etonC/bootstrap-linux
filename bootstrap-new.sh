@@ -132,6 +132,12 @@ EOF
 
 }
 
+function Ubuntu_software() { echo "==> Install usuall used software" 
+  apt-get -y htop screen snmpd unzip
+  updatedb
+#  service apache2 restart
+}
+
 function Ubuntu_cleanup() { echo "==> Cleanup Install" 
   apt-get autoremove -y
   updatedb
@@ -145,6 +151,7 @@ while read OSver; do
 			os_ubunt
 			ntp
 			firewall
+			Ubuntu_software
 			Ubuntu_cleanup
             ;;
         CentOS)
