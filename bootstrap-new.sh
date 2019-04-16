@@ -134,8 +134,6 @@ EOF
 
 function Ubuntu_software() { echo "==> Install usuall used software" 
   apt-get -y htop screen snmpd unzip
-  updatedb
-#  service apache2 restart
 }
 
 function Ubuntu_cleanup() { echo "==> Cleanup Install" 
@@ -147,6 +145,7 @@ function Ubuntu_cleanup() { echo "==> Cleanup Install"
 while read OSver; do
     case "$OSver" in
         Ubuntu)
+          echo "Prepare For $OSver environment"
         	apt
 			os_ubunt
 			ntp
@@ -155,6 +154,7 @@ while read OSver; do
 			Ubuntu_cleanup
             ;;
         CentOS)
+          echo "Prepare For $OSver environment"
 			ntp
 			firewall
             ;;
