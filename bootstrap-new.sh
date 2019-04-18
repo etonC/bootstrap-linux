@@ -29,13 +29,10 @@ function apt_update() { echo "==> Updating packages"
 }
 
 function yum_update() { echo "==> Updating packages" 
-  yum -y update
+  yum -y -q update
 }
 
-function os_ubuntu() { echo "==> Modifying OS parameters"
-  if ! grep 'session required pam_limits' /etc/pam.d/login
-  then
-    locale-gen en_US.UTF-8
+function sysconf() {
     echo 'fs.file-max=6553500' >> /etc/sysctl.conf
     echo 'net.ipv4.ip_local_port_range = 10240 65000' >> /etc/sysctl.conf
     echo 'net.ipv6.conf.all.disable_ipv6 = 1' >> /etc/sysctl.conf
@@ -50,6 +47,12 @@ function os_ubuntu() { echo "==> Modifying OS parameters"
     ulimit -n -H
     echo 1 > /proc/sys/net/ipv4/tcp_tw_reuse
     echo '10240' > /proc/sys/net/core/somaxconn
+}
+function os_ubuntu() { echo "==> Modifying OS parameters"
+  if ! grep 'session required pam_limits' /etc/pam.d/login
+  then
+    locale-gen en_US.UTF-8
+    sysconf
   fi
 }
 
@@ -59,22 +62,7 @@ function os_centos() { echo "==> Modifying OS parameters"
     localectl set-locale LANG=en_US.UTF-8
     echo 'LANG=en_US.UTF-8' >> /etc/environment
     echo 'LC_ALL=en_US.UTF-8' >> /etc/environment
-    echo 'fs.file-max=6553500' >> /etc/sysctl.conf
-    echo 'net.ipv4.ip_local_port_range = 10240 65000' >> /etc/sysctl.conf
-    echo 'net.ipv6.conf.all.disable_ipv6 = 1' >> /etc/sysctl.conf
-    echo 'net.ipv6.conf.default.disable_ipv6 = 1' >> /etc/sysctl.conf
-    echo 'net.ipv6.conf.lo.disable_ipv6 = 1' >> /etc/sysctl.conf
-    sysctl -p
-    echo '* - nofile 65535' >> /etc/security/limits.conf
-    #echo '* soft nofile 1000000' >> /etc/security/limits.conf
-    #echo '* hard nofile 1000000' >> /etc/security/limits.conf
-    echo 'session required pam_limits.so' >> /etc/pam.d/login
-    ulimit -n 1000000
-    ulimit -n -H
-    echo 1 > /proc/sys/net/ipv4/tcp_tw_reuse
-    echo '10240' > /proc/sys/net/core/somaxconn
-    echo "alias vi='vim'" >> ~/.bashrc
-    source ~/.bashrc
+    sysconf
   fi
 }
 
@@ -87,7 +75,7 @@ EOS
 }
 
 function ntp_centos() { echo "==> Setting timezone" 
-  yum install -y ntp
+  yum install -y -q ntp
   timedatectl set-timezone $timezone
   ntpdate -s ntp.ubuntu.com
   cat - << EOS > /etc/cron.d/clock
@@ -170,12 +158,14 @@ EOF
 }
 
 function software_ubuntu() { echo "==> Install usuall used software" 
-  apt-get -y htop screen snmpd unzip
+  apt-get -y install htop screen snmpd unzip
 }
 
 function software_centos() { echo "==> Install usuall used software" 
-  yum -y install epel-release ; yum -y update
-  yum -y install htop net-snmp unzip screen net-tools vim
+  yum -y -q install epel-release ; yum -y -q update
+  yum -y -q install htop net-snmp unzip screen net-tools vim
+  echo "alias vi='vim'" >> ~/.bashrc
+  source ~/.bashrc
 }
 
 function cleanup_ubuntu() { echo "==> Cleanup Install" 
