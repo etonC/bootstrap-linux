@@ -1,8 +1,6 @@
 #~/bin/bash
 
-
-
-getOS=`cat /etc/*-release |grep "^NAME"| sed 's/NAME="\(.*\)"/\1/g'`
+#getOS=`cat /etc/*-release |grep "^NAME"| sed 's/NAME="\(.*\)"/\1/g'`
 
 if [[ $(id -u) -ne 0 ]]; 
   then echo "Linux bootstrapper, Setting all the things -- run as root...";
@@ -13,8 +11,6 @@ timezone="Asia/Taipei"
 
 exec > >(tee /var/log/install.log)
 exec 2>&1
-export DEBIAN_FRONTEND=noninteractive
-export DEBIAN_PRIORITY=critical
 
 function file_update() { sed -i '\|$1|d' $2; echo $1 >> $2; }
 
@@ -48,6 +44,7 @@ function sysconf() {
     echo 1 > /proc/sys/net/ipv4/tcp_tw_reuse
     echo '10240' > /proc/sys/net/core/somaxconn
 }
+
 function os_ubuntu() { echo "==> Modifying OS parameters"
   if ! grep 'session required pam_limits' /etc/pam.d/login
   then
@@ -63,6 +60,8 @@ function os_centos() { echo "==> Modifying OS parameters"
     echo 'LANG=en_US.UTF-8' >> /etc/environment
     echo 'LC_ALL=en_US.UTF-8' >> /etc/environment
     sysconf
+    systemctl stop firewalld
+    systemctl disable firewalld
   fi
 }
 
@@ -190,6 +189,8 @@ while read OSver ; do
     case "$OSver" in
         Ubuntu)
           echo "Prepare For $OSver environment"
+          export DEBIAN_FRONTEND=noninteractive
+          export DEBIAN_PRIORITY=critical
           apt_update
           os_ubuntu
           ntp_ubuntu
