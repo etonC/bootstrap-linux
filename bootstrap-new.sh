@@ -60,6 +60,9 @@ function os_centos() { echo "==> Modifying OS parameters"
     echo 'LANG=en_US.UTF-8' >> /etc/environment
     echo 'LC_ALL=en_US.UTF-8' >> /etc/environment
     sysconf
+    echo "alias vi='vim'" >> ~/.bashrc
+    shopt -s expand_aliases
+    source ~/.bashrc
     systemctl stop firewalld
     systemctl disable firewalld
   fi
@@ -163,8 +166,6 @@ function software_ubuntu() { echo "==> Install usuall used software"
 function software_centos() { echo "==> Install usuall used software" 
   yum -y -q install epel-release ; yum -y -q update
   yum -y -q install htop net-snmp unzip screen net-tools vim
-  echo "alias vi='vim'" >> ~/.bashrc
-  source ~/.bashrc
 }
 
 function cleanup_ubuntu() { echo "==> Cleanup Install" 
