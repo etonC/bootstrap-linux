@@ -61,6 +61,7 @@ function os_centos() { echo "==> Modifying OS parameters"
     echo 'LC_ALL=en_US.UTF-8' >> /etc/environment
     sysconf
     echo "alias vi='vim'" >> ~/.bashrc
+    alias vi=vim
     shopt -s expand_aliases
     source ~/.bashrc
     systemctl stop firewalld
@@ -175,6 +176,7 @@ function cleanup_ubuntu() { echo "==> Cleanup Install"
 
 function cleanup_centos() { echo "==> Cleanup Install" 
   yum clean all
+  yum remove -y -q postfix
 }
 
 function message() {
