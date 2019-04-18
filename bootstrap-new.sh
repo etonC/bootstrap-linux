@@ -69,18 +69,18 @@ function os_centos() { echo "==> Modifying OS parameters"
 function ntp_ubuntu() { echo "==> Setting timezone" 
   echo '$timezone' | tee /etc/timezone
   dpkg-reconfigure --frontend noninteractive tzdata
-  cat - << EOS > /etc/cron.d/clock
+  cat - << EOF > /etc/cron.d/clock
 0 0 * * * * root ntpdate ntp.ubuntu.com pool.ntp.org 2>&1 >> /dev/null
-EOS
+EOF
 }
 
 function ntp_centos() { echo "==> Setting timezone" 
   yum install -y -q ntp
   timedatectl set-timezone $timezone
   ntpdate -s ntp.ubuntu.com
-  cat - << EOS > /etc/cron.d/clock
+  cat - << EOF > /etc/cron.d/clock
 0 0 * * * * root ntpdate ntp.ubuntu.com pool.ntp.org 2>&1 >> /dev/null
-EOS
+EOF
 }
 
 #function users() { echo "==> Check/add Ubuntu user"
