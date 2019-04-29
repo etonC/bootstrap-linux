@@ -143,7 +143,7 @@ EOF
   
   #Allowing Incoming Traffic on Specific Ports
   #iptables -A INPUT -p tcp -s Internal-IP-prefix -j ACCEPT
-  iptables -A INPUT -p tcp -s 59.124.224.242 -j ACCEPT
+  iptables -A INPUT -p tcp -s 1.1.1.1 -j ACCEPT
   
   iptables -A INPUT -p tcp --dport 80 -j ACCEPT
   iptables -A INPUT -p udp -m multiport --dports 123,161 -j ACCEPT
