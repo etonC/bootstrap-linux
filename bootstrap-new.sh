@@ -96,60 +96,60 @@ EOF
 function firewall() { echo "==> Create Firewall Scripts"
   mkdir /etc/firewall/
   cat - << EOF > /etc/firewall/def.sh
-  #!/bin/bash
-  #
-  # Firewall
-  #
+#!/bin/bash
+#
+# Firewall
+#
   
-  # Flush All Rules and Delete All Custom Chains
-  iptables -F
-  iptables -X
-  iptables -t nat -F
-  iptables -t nat -X
+# Flush All Rules and Delete All Custom Chains
+iptables -F
+iptables -X
+iptables -t nat -F
+iptables -t nat -X
   
-  # Set Up Policies
-  iptables -P INPUT      ACCEPT
-  iptables -P OUTPUT     ACCEPT
-  iptables -P FORWARD    ACCEPT
+# Set Up Policies
+iptables -P INPUT      ACCEPT
+iptables -P OUTPUT     ACCEPT
+iptables -P FORWARD    ACCEPT
 EOF
 
   chmod +x /etc/firewall/def.sh
   
   cat - << EOF > /etc/firewall/firewall.sh
-  #!/bin/bash
-  #
-  # Firewall
-  #
+#!/bin/bash
+#
+# Firewall
+#
   
-  # Flush All Rules and Delete All Custom Chains
-  iptables -F
-  iptables -X
-  iptables -t nat -F
-  iptables -t nat -X
+# Flush All Rules and Delete All Custom Chains
+iptables -F
+iptables -X
+iptables -t nat -F
+iptables -t nat -X
   
-  # Set Up Policies
-  iptables -P INPUT      DROP
-  iptables -P OUTPUT     ACCEPT
-  iptables -P FORWARD    DROP
+# Set Up Policies
+iptables -P INPUT      DROP
+iptables -P OUTPUT     ACCEPT
+iptables -P FORWARD    DROP
   
-  #Allowing Established Sessions
-  iptables -A INPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
-  iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+#Allowing Established Sessions
+iptables -A INPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
   
-  iptables -A INPUT  -i lo -j ACCEPT
-  iptables -A OUTPUT -o lo -j ACCEPT
+iptables -A INPUT  -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
   
-  #iptables -A FORWARD -s 10.0.120.0/24 -j ACCEPT
+#iptables -A FORWARD -s 10.0.120.0/24 -j ACCEPT
   
-  #Allowing Incoming Traffic on Specific Ports
-  #iptables -A INPUT -p tcp -s Internal-IP-prefix -j ACCEPT
-  iptables -A INPUT -p tcp -s 1.1.1.1 -j ACCEPT
+#Allowing Incoming Traffic on Specific Ports
+#iptables -A INPUT -p tcp -s Internal-IP-prefix -j ACCEPT
+iptables -A INPUT -p tcp -s 1.1.1.1 -j ACCEPT
   
-  iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-  iptables -A INPUT -p udp -m multiport --dports 123,161 -j ACCEPT
+iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+iptables -A INPUT -p udp -m multiport --dports 123,161 -j ACCEPT
   
-  #Allowing ICMP
-  iptables -A INPUT -p icmp -j ACCEPT
+#Allowing ICMP
+iptables -A INPUT -p icmp -j ACCEPT
   
 EOF
   
