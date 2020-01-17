@@ -1,4 +1,4 @@
-#~/bin/bash
+#!/bin/bash
 
 #getOS=`cat /etc/*-release |grep "^NAME"| sed 's/NAME="\(.*\)"/\1/g'`
 
