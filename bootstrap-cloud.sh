@@ -70,6 +70,7 @@ function os_centos() { echo "==> Modifying OS parameters"
 function ntp_ubuntu() { echo "==> Setting timezone" 
   echo '$timezone' | tee /etc/timezone
   dpkg-reconfigure --frontend noninteractive tzdata
+  cp /usr/share/zoneinfo/Asia/Taipei /etc/localtime
   apt install -y chrony
   #cat - << EOF > /etc/cron.d/clock
 #0 0 * * * * root ntpdate ntp.ubuntu.com pool.ntp.org 2>&1 >> /dev/null
