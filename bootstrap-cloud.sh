@@ -72,6 +72,7 @@ function ntp_ubuntu() { echo "==> Setting timezone"
   dpkg-reconfigure --frontend noninteractive tzdata
   cp /usr/share/zoneinfo/Asia/Taipei /etc/localtime
   apt install -y chrony
+  timedatectl set-timezone Asia/Taipei ; chronyc -a makestep
   #cat - << EOF > /etc/cron.d/clock
 #0 0 * * * * root ntpdate ntp.ubuntu.com pool.ntp.org 2>&1 >> /dev/null
 #EOF
