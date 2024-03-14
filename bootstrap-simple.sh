@@ -168,7 +168,6 @@ function software_centos() { echo "==> Install usuall used software"
 
 function cleanup_ubuntu() { echo "==> Cleanup Install" 
   apt-get autoremove -y
-  updatedb
 }
 
 function cleanup_centos() { echo "==> Cleanup Install" 
@@ -179,8 +178,6 @@ function cleanup_centos() { echo "==> Cleanup Install"
 function message() {
   echo "############################################################"
   echo "Setting Done."
-  echo "Firewall Policy already added. If want to enable afert boot."
-  echo "Please modify your rc.local file."
   echo "############################################################"
 }
 
@@ -190,6 +187,7 @@ while read OSver ; do
         Ubuntu)
           echo "Prepare For $OSver environment"
           export DEBIAN_FRONTEND=noninteractive
+          echo 'debconf debconf/frontend select Noninteractive' | sudo debconf-set-selections
           export DEBIAN_PRIORITY=critical
           apt_update
           os_ubuntu
