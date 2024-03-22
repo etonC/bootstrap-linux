@@ -42,7 +42,7 @@ function sysconf() {
     ulimit -n 1000000
     ulimit -n -H
     echo 1 > /proc/sys/net/ipv4/tcp_tw_reuse
-    echo '10240' > /proc/sys/net/core/somaxconn
+    echo '1024' > /proc/sys/net/core/somaxconn
 }
 
 function os_ubuntu() { echo "==> Modifying OS parameters"
