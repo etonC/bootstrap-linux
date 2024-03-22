@@ -38,7 +38,7 @@ function sysconf() {
     echo '* - nofile 65535' >> /etc/security/limits.conf
     #echo '* soft nofile 1000000' >> /etc/security/limits.conf
     #echo '* hard nofile 1000000' >> /etc/security/limits.conf
-    echo 'session required pam_limits.so' >> /etc/pam.d/login
+    #echo 'session required pam_limits.so' >> /etc/pam.d/login # ubuntu 20.04 above version already include
     ulimit -n 1000000
     ulimit -n -H
     echo 1 > /proc/sys/net/ipv4/tcp_tw_reuse
@@ -93,72 +93,8 @@ EOF
 #  fi
 #}
 
-function firewall() { echo "==> Create Firewall Scripts"
-  mkdir /etc/firewall/
-  cat - << EOF > /etc/firewall/def.sh
-#!/bin/bash
-#
-# Firewall
-#
-  
-# Flush All Rules and Delete All Custom Chains
-iptables -F
-iptables -X
-iptables -t nat -F
-iptables -t nat -X
-  
-# Set Up Policies
-iptables -P INPUT      ACCEPT
-iptables -P OUTPUT     ACCEPT
-iptables -P FORWARD    ACCEPT
-EOF
-
-  chmod +x /etc/firewall/def.sh
-  
-  cat - << EOF > /etc/firewall/firewall.sh
-#!/bin/bash
-#
-# Firewall
-#
-  
-# Flush All Rules and Delete All Custom Chains
-iptables -F
-iptables -X
-iptables -t nat -F
-iptables -t nat -X
-  
-# Set Up Policies
-iptables -P INPUT      DROP
-iptables -P OUTPUT     ACCEPT
-iptables -P FORWARD    DROP
-  
-#Allowing Established Sessions
-iptables -A INPUT   -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-  
-iptables -A INPUT  -i lo -j ACCEPT
-iptables -A OUTPUT -o lo -j ACCEPT
-  
-#iptables -A FORWARD -s 10.0.120.0/24 -j ACCEPT
-  
-#Allowing Incoming Traffic on Specific Ports
-#iptables -A INPUT -p tcp -s Internal-IP-prefix -j ACCEPT
-iptables -A INPUT -p tcp -s 1.1.1.1 -j ACCEPT
-  
-iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-iptables -A INPUT -p udp -m multiport --dports 123,161 -j ACCEPT
-  
-#Allowing ICMP
-iptables -A INPUT -p icmp -j ACCEPT
-  
-EOF
-  
-  chmod +x /etc/firewall/firewall.sh
-
-}
-
 function software_ubuntu() { echo "==> Install usuall used software" 
-  apt-get -y install htop screen snmpd unzip
+  apt-get -y install htop screen snmpd unzip chrony
 }
 
 function software_centos() { echo "==> Install usuall used software" 
@@ -192,7 +128,6 @@ while read OSver ; do
           apt_update
           os_ubuntu
           #ntp_ubuntu
-          #firewall
           software_ubuntu
           cleanup_ubuntu
           message
@@ -203,7 +138,6 @@ while read OSver ; do
           os_centos
           ntp_centos
           software_centos
-          firewall
           cleanup_centos
           message
           ;;
